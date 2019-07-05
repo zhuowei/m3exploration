@@ -3,6 +3,7 @@ import m3inference
 import torch
 import numpy as np
 import json
+
 # Load static data for one user
 
 username = "2zhuowei"
@@ -48,4 +49,7 @@ for i in range(len(forward_result)):
 target_class = 3 # >=40
 criterion = foolbox.criteria.TargetClassProbability(target_class, p=0.9)
 attack = foolbox.attacks.LBFGSAttack(fmodel, criterion)
-adversarial = attack(start_image, 1)
+adversarial = attack(start_image, 1, maxiter=20)
+import pickle
+with open("out.pickle", "wb") as outfile:
+	pickle.dump(adversarial, outfile)
