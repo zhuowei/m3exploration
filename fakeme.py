@@ -43,11 +43,17 @@ for i in range(len(forward_result)):
     if forward_result[i] >= cur_max:
         cur_max = forward_result[i]
         cur_class = i
+print(cur_class)
 
 # run the attack, targeting one other age group
 
+class TargetClassProbabilityPostSoftmax(foolbox.criteria.TargetClassProbability):
+    # our nn already includes a softmax, so the target class doesn't need to do it
+    def is_adversarial(self, predictions, label):
+        return predictions[self.target_class()] > self.p
+
 target_class = 3 # >=40
-criterion = foolbox.criteria.TargetClassProbability(target_class, p=0.9)
+criterion = TargetClassProbabilityPostSoftmax(target_class, p=0.9)
 attack = foolbox.attacks.LBFGSAttack(fmodel, criterion)
 adversarial = attack(start_image, 1, maxiter=20)
 import pickle
