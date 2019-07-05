@@ -64,8 +64,8 @@ class TargetClassProbabilityPostSoftmax(foolbox.criteria.TargetClassProbability)
 
 target_class = 3 # >=40
 criterion = TargetClassProbabilityPostSoftmax(target_class, p=0.9)
-attack = foolbox.attacks.FGSM(fmodel, criterion)
-adversarial = attack(start_image, 1)
+attack = foolbox.attacks.LBFGSAttack(fmodel, criterion)
+adversarial = attack(start_image, 1, maxiter=20)
 import pickle
 with open("out.pickle", "wb") as outfile:
 	pickle.dump(adversarial, outfile)
