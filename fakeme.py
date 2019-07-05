@@ -29,5 +29,8 @@ m3model.load_state_dict(torch.load("../m3webdemo/full_model.mdl", map_location="
 print("Loaded state")
 num_classes = 2 # corp/noncorp
 fmodel = foolbox.models.PyTorchModel(m3model, bounds=(0, 1), num_classes=num_classes)
-one = fmodel.forward_one(start_image)
-print(one)
+#one = fmodel.forward_one(start_image)
+target_class = 0 # non-corp
+criterion = foolbox.criteria.TargetClassProbability(target_class, p=0.99)
+attack = foolbox.attacks.LBFGSAttack(fmodel, criterion)
+adversarial = attack(start_image, 1)
