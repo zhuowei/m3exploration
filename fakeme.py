@@ -3,14 +3,24 @@ import m3inference
 import torch
 import numpy as np
 import json
+import os
 
 # Load static data for one user
 
 username = "2zhuowei"
 
-with open("../m3webdemo/static/m3/" + username + ".json", "r") as infile:
+# download user data with m3inference if needed
+
+m3cachedir = "cachedir"
+
+username_file = m3cachedir + "/" + username + ".json"
+if not os.path.exists(username_file):
+    print("Generating initial inference with m3inference")
+    m3twitter = m3inference.M3Twitter(cache_dir=m3cachedir, model_dir="./")
+    m3twitter.infer_screen_name(username)
+
+with open(username_file, "r") as infile:
     user_data = json.load(infile)
-user_data["input"]["img_path"] = "../m3webdemo/" + user_data["input"]["img_path"]
 
 # Load the image
 
@@ -28,7 +38,7 @@ class M3ModifiedModel(m3inference.full_model.M3InferenceModel):
 
 m3model = M3ModifiedModel(device="cpu")
 m3model.eval()
-m3model.load_state_dict(torch.load("../m3webdemo/full_model.mdl", map_location="cpu"))
+m3model.load_state_dict(torch.load("./full_model.mdl", map_location="cpu"))
 
 print("Loaded state")
 num_classes = 4 # 4 age groups
