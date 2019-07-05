@@ -1,0 +1,2 @@
+m3inference==1.0.3
+foolbox==2.0.0b0
