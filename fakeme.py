@@ -5,6 +5,8 @@ import numpy as np
 import json
 import os
 
+import imagewriter
+
 # Load static data for one user
 
 username = "2zhuowei"
@@ -66,6 +68,11 @@ target_class = 3 # >=40
 criterion = TargetClassProbabilityPostSoftmax(target_class, p=0.9)
 attack = foolbox.attacks.LBFGSAttack(fmodel, criterion)
 adversarial = attack(start_image, 1, maxiter=20)
+
+# write output in pickle and png format
 import pickle
 with open("out.pickle", "wb") as outfile:
 	pickle.dump(adversarial, outfile)
+imagewriter.writeresult(adversarial, "output_" + username + ".png")
+
+print("Adversarial output generated at output_" + username + ".png!")
